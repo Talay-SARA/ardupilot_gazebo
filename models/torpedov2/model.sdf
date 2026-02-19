@@ -208,8 +208,8 @@
       <axis>
         <xyz>0 1 0</xyz>
         <limit>
-          <lower>-0.261799</lower>
-          <upper>0.261799</upper>
+          <lower>-0.5236</lower>
+          <upper>0.5236</upper>
           <effort>-1</effort>
           <velocity>-1</velocity>
         </limit>
@@ -226,8 +226,8 @@
       <axis>
         <xyz>0 0 1</xyz>
         <limit>
-          <lower>-0.261799</lower>
-          <upper>0.261799</upper>
+          <lower>-0.5236</lower>
+          <upper>0.5236</upper>
           <effort>-1</effort>
           <velocity>-1</velocity>
         </limit>
@@ -389,12 +389,12 @@
       <!--
           SERVO2 (channel 1) - Vertical fins (rudder / yaw)
           PWM [1100, 1900] => raw [0, 1], offset -0.5 => [-0.5, 0.5]
-          multiplier 0.524 => position [-0.262, 0.262] rad (~15 deg)
+          multiplier 1.048 => position [-0.524, 0.524] rad (~30 deg)
       -->
       <control channel="1">
         <jointName>vertical_fins_joint</jointName>
         <useForce>1</useForce>
-        <multiplier>0.524</multiplier>
+        <multiplier>1.048</multiplier>
         <offset>-0.5</offset>
         <servo_min>1100</servo_min>
         <servo_max>1900</servo_max>
@@ -411,12 +411,12 @@
       <!--
           SERVO3 (channel 2) - Horizontal fins (elevator / pitch)
           PWM [1100, 1900] => raw [0, 1], offset -0.5 => [-0.5, 0.5]
-          multiplier 0.524 => position [-0.262, 0.262] rad (~15 deg)
+          multiplier 1.048 => position [-0.524, 0.524] rad (~30 deg)
       -->
       <control channel="2">
         <jointName>horizontal_fins_joint</jointName>
         <useForce>1</useForce>
-        <multiplier>0.524</multiplier>
+        <multiplier>1.048</multiplier>
         <offset>-0.5</offset>
         <servo_min>1100</servo_min>
         <servo_max>1900</servo_max>
