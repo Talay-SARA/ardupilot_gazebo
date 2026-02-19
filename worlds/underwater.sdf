@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<!--
+
+  Underwater AUV world with ArduPilot SITL control.
+
+  The following plugins are used:
+
+  * Buoyancy: applies buoyancy forces
+  * ArduPilotPlugin: SITL interface for motor/servo control
+  * LiftDrag: generates forces on the vertical and horizontal fins
+  * Thruster: propels the vehicle
+  * Hydrodynamics: applies forces such as added mass, drag and coriolis
+
+  ArduPilot SERVO mapping:
+    SERVO1 (channel 0) - Thruster (propeller_joint via cmd_thrust topic)
+    SERVO2 (channel 1) - Vertical fins (rudder / yaw)
+    SERVO3 (channel 2) - Horizontal fins (elevator / pitch)
+
+  Launch ArduPilot SITL:
+    sim_vehicle.py -v ArduSub -f vectored --model JSON --console
+
+-->
+<sdf version="1.6">
+  <world name="buoyant_tethys">
+    <scene>
+      <!-- For turquoise ambient -->
+      <ambient>0.0 1.0 1.0</ambient>
+      <background>0.0 0.7 0.8</background>
+    </scene>
+
+    <physics name="1ms" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin
+      filename="gz-sim-buoyancy-system"
+      name="gz::sim::systems::Buoyancy">
+      <uniform_fluid_density>1000</uniform_fluid_density>
+    </plugin>
+    <plugin
+      filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.5 0.5 0.5 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Torpedo V2: Tethys-based AUV with ArduPilot control -->
+    <include>
+      <uri>model://torpedov2</uri>
+      <pose>0 0 1 0 0 1.57</pose>
+    </include>
+
+  </world>
+</sdf>
