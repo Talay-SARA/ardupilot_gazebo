@@ -1,0 +1,431 @@
+<?xml version="1.0" ?>
+<!-- EXTREMELY  IMPORTANT: THIS IS A FAKE TORPEDO WITH THE ACTUAL COM AND COB IGNORED
+THIS IS JUST TO TEST YAW FOR ONLY YAW -->
+
+<sdf version="1.9">
+  <model name="torpedov4">
+    <self_collide>false</self_collide>
+
+    <!-- ==================== BODY ==================== -->
+
+    <link name="base_link">
+      <inertial>
+        <pose>0.4015 0 0 0 0 0</pose>
+        <mass>10</mass>
+        <inertia>
+          <ixx>0.075645</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.563451</iyy>
+          <iyz>0</iyz>
+          <izz>0.563451</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Buoyancy collision box: only body contributes (fins/prop have no collision).
+           Total vehicle mass = 10 + 0.2 + 0.2 + 0.09 = 10.49 kg
+           Height = 10.49 / (1000 * 0.7942 * 0.3) = 0.04403 m  (10.49 kg displaced = neutral buoyancy)
+           CoB x-offset = system CoM = (10*0.4015 + 0.2*1.05 + 0.2*1.05 + 0.09*0.5685) / 10.49 = +0.4277 m
+           CoB z-offset = +0.04 m above CoM → metacentric restoring moment ~4.1 N·m/rad
+           This passively stabilises pitch (and roll) so the torpedo self-rights. -->
+      <collision name="main_body_buoyancy">
+        <pose>0.4277 0 0.04 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.7942 0.3 0.04403</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="body_visual">
+        <geometry>
+          <mesh>
+            <uri>meshes/tethys.dae</uri>
+            <submesh>
+              <name>Body</name>
+              <center>false</center>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>1.0 1.0 1.0</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Tethys_Albedo.png</albedo_map>
+              <normal_map>materials/textures/Tethys_Normal.png</normal_map>
+              <metalness_map>materials/textures/Tethys_Metalness.png</metalness_map>
+              <roughness_map>materials/textures/Tethys_Roughness.png</roughness_map>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+
+      <!-- IMU sensor (required for ArduPilot) -->
+      <sensor name="imu_sensor" type="imu">
+        <always_on>1</always_on>
+        <update_rate>1000</update_rate>
+      </sensor>
+    </link>
+
+    <!-- ==================== HORIZONTAL FINS (elevator / pitch) ==================== -->
+
+    <link name="horizontal_fins">
+      <pose>1.05 0 0 0 0 0</pose>
+      <inertial>
+        <mass>0.2</mass>
+        <inertia>
+          <ixx>0.00017333</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00017333</iyy>
+          <iyz>0</iyz>
+          <izz>0.00033333</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <pose>-1.05 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>meshes/tethys.dae</uri>
+            <submesh>
+              <name>Fins_Horizontal</name>
+              <center>false</center>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>1.0 1.0 1.0</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Tethys_Albedo.png</albedo_map>
+              <normal_map>materials/textures/Tethys_Normal.png</normal_map>
+              <metalness_map>materials/textures/Tethys_Metalness.png</metalness_map>
+              <roughness_map>materials/textures/Tethys_Roughness.png</roughness_map>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+
+    <!-- ==================== VERTICAL FINS (rudder / yaw) ==================== -->
+
+    <link name="vertical_fins">
+      <pose>1.05 0 0 0 0 0</pose>
+      <inertial>
+        <mass>0.2</mass>
+        <inertia>
+          <ixx>0.00017333</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00017333</iyy>
+          <iyz>0</iyz>
+          <izz>0.00033333</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <pose>-1.05 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>meshes/tethys.dae</uri>
+            <submesh>
+              <name>Fins_vertical</name>
+              <center>false</center>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>1.0 1.0 1.0</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Tethys_Albedo.png</albedo_map>
+              <normal_map>materials/textures/Tethys_Normal.png</normal_map>
+              <metalness_map>materials/textures/Tethys_Metalness.png</metalness_map>
+              <roughness_map>materials/textures/Tethys_Roughness.png</roughness_map>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+
+    <!-- ==================== PROPELLER ==================== -->
+
+    <link name="propeller">
+      <pose>0.5685 0 0 0 0 0</pose>
+      <inertial>
+        <mass>0.09</mass>
+        <inertia>
+          <ixx>0.000143971303</ixx>
+          <ixy>0.000000000008</ixy>
+          <ixz>-0.000000000224</ixz>
+          <iyy>0.000140915448</iyy>
+          <iyz>-0.000025236433</iyz>
+          <izz>0.000033571862</izz>
+        </inertia>
+      </inertial>
+      <visual name="visual">
+        <pose>-0.5685 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>meshes/tethys.dae</uri>
+            <submesh>
+              <name>Prop</name>
+              <center>false</center>
+            </submesh>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1.0 1.0 1.0</diffuse>
+          <specular>1.0 1.0 1.0</specular>
+          <pbr>
+            <metal>
+              <albedo_map>materials/textures/Tethys_Albedo.png</albedo_map>
+              <normal_map>materials/textures/Tethys_Normal.png</normal_map>
+              <metalness_map>materials/textures/Tethys_Metalness.png</metalness_map>
+              <roughness_map>materials/textures/Tethys_Roughness.png</roughness_map>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+    </link>
+
+    <!-- ==================== JOINTS ==================== -->
+
+    <joint name="horizontal_fins_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>horizontal_fins</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-0.3840</lower>
+          <upper>0.3840</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.2</damping>
+          <friction>0.02</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <joint name="vertical_fins_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>vertical_fins</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-0.3840</lower>
+          <upper>0.3840</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.01</friction>
+        </dynamics>
+      </axis>
+    </joint>
+
+    <joint name="propeller_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>propeller</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1e+12</lower>
+          <upper>1e+12</upper>
+          <effort>-1</effort>
+          <velocity>-1</velocity>
+        </limit>
+      </axis>
+    </joint>
+
+    <!-- ==================== HYDRODYNAMICS ==================== -->
+
+    <plugin
+      filename="gz-sim-hydrodynamics-system"
+      name="gz::sim::systems::Hydrodynamics">
+      <link_name>base_link</link_name>
+      <!-- Added mass: zeroed — gz-sim8/dartsim added-mass feedback is numerically
+           unstable at startup and causes NaN in DART forward dynamics.
+           Effective added mass is implicitly captured by the damping terms. -->
+      <xDotU>0</xDotU>
+      <yDotV>0</yDotV>
+      <zDotW>0</zDotW>
+      <kDotP>0</kDotP>
+      <mDotQ>0</mDotQ>
+      <nDotR>0</nDotR>
+      <!-- Linear drag -->
+      <xUabsU>-1.30</xUabsU>
+      <xU>0</xU>
+      <yVabsV>-60.5</yVabsV>
+      <yV>0</yV>
+      <zWabsW>-60.5</zWabsW>
+      <zW>0</zW>
+      <!-- Angular damping: cross-flow strip theory (Cd=1, D=0.246m) -->
+      <kPabsP>-0.0010</kPabsP>
+      <kP>0</kP>
+      <mQabsQ>-1.5292</mQabsQ>
+      <mQ>0</mQ>
+      <nRabsR>-1.5292</nRabsR>
+      <nR>0</nR>
+    </plugin>
+
+    <!-- ==================== LIFT AND DRAG ==================== -->
+
+    <!-- Vertical fin (rudder - yaw control) -->
+    <plugin
+      filename="gz-sim-lift-drag-system"
+      name="gz::sim::systems::LiftDrag">
+      <air_density>1000</air_density>
+      <cla>4.13</cla>
+      <cla_stall>-1.1</cla_stall>
+      <cda>0.2</cda>
+      <cda_stall>0.03</cda_stall>
+      <alpha_stall>0.3839724354</alpha_stall>
+      <a0>0</a0>
+      <area>0.01</area>
+      <upward>0 1 0</upward>
+      <forward>-1 0 0</forward>
+      <link_name>vertical_fins</link_name>
+      <cp>0 0 0</cp>
+    </plugin>
+
+    <!-- Horizontal fin (elevator - pitch control) -->
+    <plugin
+      filename="gz-sim-lift-drag-system"
+      name="gz::sim::systems::LiftDrag">
+      <air_density>1000</air_density>
+      <cla>4.13</cla>
+      <cla_stall>-1.1</cla_stall>
+      <cda>0.2</cda>
+      <cda_stall>0.03</cda_stall>
+      <alpha_stall>0.3839724354</alpha_stall>
+      <a0>0</a0>
+      <area>0.01</area>
+      <upward>0 0 1</upward>
+      <forward>-1 0 0</forward>
+      <link_name>horizontal_fins</link_name>
+      <cp>0 0 0</cp>
+    </plugin>
+
+    <!-- ==================== THRUSTER ==================== -->
+
+    <plugin
+      filename="gz-sim-thruster-system"
+      name="gz::sim::systems::Thruster">
+      <namespace>torpedov2</namespace>
+      <joint_name>propeller_joint</joint_name>
+      <thrust_coefficient>0.004422</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.2</propeller_diameter>
+    </plugin>
+
+    <!-- ==================== JOINT STATE + FORCE ==================== -->
+
+    <plugin
+      filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+      <joint_name>vertical_fins_joint</joint_name>
+      <joint_name>horizontal_fins_joint</joint_name>
+      <joint_name>propeller_joint</joint_name>
+    </plugin>
+
+    <plugin
+      filename="gz-sim-apply-joint-force-system"
+      name="gz::sim::systems::ApplyJointForce">
+      <joint_name>vertical_fins_joint</joint_name>
+    </plugin>
+    <plugin
+      filename="gz-sim-apply-joint-force-system"
+      name="gz::sim::systems::ApplyJointForce">
+      <joint_name>horizontal_fins_joint</joint_name>
+    </plugin>
+
+    <!-- ==================== ARDUPILOT PLUGIN ==================== -->
+
+    <plugin name="ArduPilotPlugin" filename="ArduPilotPlugin">
+      <!-- Port settings -->
+      <fdm_addr>127.0.0.1</fdm_addr>
+      <fdm_port_in>9002</fdm_port_in>
+      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      <lock_step>1</lock_step>
+
+      <!-- Frame conventions
+           Tethys body: x-forward, y-left, z-up
+           modelXYZToAirplaneXForwardZDown: body to NED body frame
+           gazeboXYZToNED: world to NED world frame
+      -->
+      <modelXYZToAirplaneXForwardZDown degrees="true">0 0 0 180 0 180</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED degrees="true">0 0 0 180 0 90</gazeboXYZToNED>
+
+      <!-- Sensors -->
+      <imuName>base_link::imu_sensor</imuName>
+
+      <!--
+          SERVO1 (channel 0) - Thruster
+          Uses COMMAND type to publish thrust to the Thruster plugin topic.
+          PWM [1100, 1900] => raw [0, 1], offset -0.5 => [-0.5, 0.5]
+          multiplier -100 => thrust [-50, 50] N (negative = forward)
+      -->
+      <control channel="0">
+        <jointName>propeller_joint</jointName>
+        <useForce>0</useForce>
+        <multiplier>-100</multiplier>
+        <offset>-0.5</offset>
+        <servo_min>1100</servo_min>
+        <servo_max>1900</servo_max>
+        <type>COMMAND</type>
+        <cmd_topic>/model/torpedov2/joint/propeller_joint/cmd_thrust</cmd_topic>
+      </control>
+
+      <!--
+          SERVO2 (channel 1) - Vertical fins (rudder / yaw)
+          PWM [1100, 1900] => raw [0, 1], offset -0.5 => [-0.5, 0.5]
+          multiplier 0.768 => position [-0.384, 0.384] rad (~22 deg)
+      -->
+      <control channel="1">
+        <jointName>vertical_fins_joint</jointName>
+        <useForce>1</useForce>
+        <multiplier>0.768</multiplier>
+        <offset>-0.5</offset>
+        <servo_min>1100</servo_min>
+        <servo_max>1900</servo_max>
+        <type>POSITION</type>
+        <p_gain>10.0</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0.5</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>10.0</cmd_max>
+        <cmd_min>-10.0</cmd_min>
+      </control>
+
+      <!--
+          SERVO3 (channel 2) - Horizontal fins (elevator / pitch)
+          PWM [1100, 1900] => raw [0, 1], offset -0.5 => [-0.5, 0.5]
+          multiplier 0.768 => position [-0.384, 0.384] rad (~22 deg)
+      -->
+      <control channel="2">
+        <jointName>horizontal_fins_joint</jointName>
+        <useForce>1</useForce>
+        <multiplier>0.768</multiplier>
+        <offset>-0.5</offset>
+        <servo_min>1100</servo_min>
+        <servo_max>1900</servo_max>
+        <type>POSITION</type>
+        <p_gain>10.0</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0.5</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>10.0</cmd_max>
+        <cmd_min>-10.0</cmd_min>
+      </control>
+    </plugin>
+
+  </model>
+</sdf>

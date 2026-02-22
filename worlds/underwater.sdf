@@ -17,7 +17,7 @@
     SERVO3 (channel 2) - Horizontal fins (elevator / pitch)
 
   Launch ArduPilot SITL:
-    sim_vehicle.py -v ArduSub -f vectored --model JSON --console
+    sim_vehicle.py -v ArduSub -f custom --model JSON --console
 
 -->
 <sdf version="1.6">
@@ -47,7 +47,13 @@
     <plugin
       filename="gz-sim-buoyancy-system"
       name="gz::sim::systems::Buoyancy">
-      <uniform_fluid_density>1000</uniform_fluid_density>
+      <graded_buoyancy>
+        <default_density>1000</default_density>
+        <density_change>
+          <above_depth>0</above_depth>
+          <density>1</density>
+        </density_change>
+      </graded_buoyancy>
     </plugin>
     <plugin
       filename="gz-sim-imu-system"
@@ -73,10 +79,10 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
-    <!-- Torpedo V2: Tethys-based AUV with ArduPilot control -->
+    <!-- Torpedo V3: Talay custom torpedo-->
     <include>
-      <uri>model://torpedov2</uri>
-      <pose>0 0 1 0 0 1.57</pose>
+      <uri>model://torpedov4</uri>
+      <pose>0 0 -1 0 0 1.57</pose>
     </include>
 
   </world>
