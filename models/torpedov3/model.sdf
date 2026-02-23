@@ -10,9 +10,6 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
 
     <link name="base_link">
       <inertial>
-        <!-- CoM 20mm below centreline: heavy components (battery/payload) sit in
-             lower half of hull. CoB remains at z=0 (geometric centre) giving
-             GB=20mm → 2.12 Nm max righting moment, T_roll≈1.2s. -->
         <pose>0.0044 0 -0.020 0 0 0</pose>
         <mass>10</mass>
         <inertia>
@@ -28,7 +25,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
       <!-- Buoyancy collision box: only body contributes (fins/prop have no collision).
            Height = 10.8 / (1000*0.7942*0.3) = 0.04533 m  (10.8 kg displaced = slight positive buoyancy) -->
       <collision name="main_body_buoyancy">
-        <pose>0.0207 0 0 0 0 0</pose>
+        <pose>0.0474 0 0 0 0 0</pose>  <!-- COM is at (0.049) with the fins-->
         <geometry>
           <box>
             <size>0.7942 0.3 0.04533</size>
@@ -70,7 +67,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
     <!-- ==================== HORIZONTAL FINS (elevator / pitch) ==================== -->
 
     <link name="horizontal_fins">
-      <pose>0.4170 0 0 0 0 0</pose>
+      <pose>1.05 0 0 0 0 0</pose>
       <inertial>
         <mass>0.2</mass>
         <inertia>
@@ -83,7 +80,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
         </inertia>
       </inertial>
       <visual name="visual">
-        <pose>-0.4170 0 0 0 0 0</pose>
+        <pose>-1.05 0 0 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>meshes/tethys.dae</uri>
@@ -111,7 +108,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
     <!-- ==================== VERTICAL FINS (rudder / yaw) ==================== -->
 
     <link name="vertical_fins">
-      <pose>0.4170 0 0 0 0 0</pose>
+      <pose>1.05 0 0 0 0 0</pose>
       <inertial>
         <mass>0.2</mass>
         <inertia>
@@ -124,7 +121,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
         </inertia>
       </inertial>
       <visual name="visual">
-        <pose>-0.4170 0 0 0 0 0</pose>
+        <pose>-1.05 0 0 0 0 0</pose>
         <geometry>
           <mesh>
             <uri>meshes/tethys.dae</uri>
@@ -288,7 +285,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
       <a0>0</a0>
       <area>0.01</area>
       <upward>0 1 0</upward>
-      <forward>1 0 0</forward>
+      <forward>-1 0 0</forward>
       <link_name>vertical_fins</link_name>
       <cp>0 0 0</cp>
     </plugin>
@@ -306,7 +303,7 @@ ALSO NEED TO TEST THE PITCH, TORPEDOV4 IS JUST TO TEST YAW FOR ONLY YAW -->
       <a0>0</a0>
       <area>0.01</area>
       <upward>0 0 1</upward>
-      <forward>1 0 0</forward>
+      <forward>-1 0 0</forward>
       <link_name>horizontal_fins</link_name>
       <cp>0 0 0</cp>
     </plugin>
